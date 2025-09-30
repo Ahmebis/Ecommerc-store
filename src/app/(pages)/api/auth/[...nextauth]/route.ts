@@ -40,7 +40,7 @@ const handler = NextAuth({
       if (user) {
         token.user = user.user;
 
-        token.accessToken = user.token;
+        token.token = user.token;
       }
 
       return token;

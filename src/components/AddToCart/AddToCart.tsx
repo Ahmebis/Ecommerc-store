@@ -13,11 +13,18 @@ import { useRouter } from "next/navigation";
 import AddFavProduct from "@/app/(pages)/AddFavProduct/page";
 import { addToWishlist } from "@/Helpers/wishList/addToWishlist";
 
+import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
+
+import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
+import { getUserToken } from "@/Helpers/getUserToken/getUserToken";
+
 export default function AddToCart({ productId }: { productId: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isWishLoading, setIsWishLoading] = useState(false);
   const { getCart, setCartData } = useContext(CartContext);
-
+  const [removingId, setIsRemovingId] = useState<null | string>(null);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlist, setWishlist] = useState<any[]>([]);
   const session = useSession();
   const router = useRouter();
 
@@ -31,7 +38,7 @@ export default function AddToCart({ productId }: { productId: string }) {
       setCartData(data);
       // console.log("API Response:", data);
 
-      data.status == "success" && toast.success("Cart updated!");
+      data.status == "success" && toast.success(data.message);
       setIsLoading(false);
       // console.log(data);
     } else {
@@ -43,12 +50,33 @@ export default function AddToCart({ productId }: { productId: string }) {
       try {
         setIsWishLoading(true);
 
-        const result = await addToWishlist(productId);
-
-        if (result?.status === "success") {
-          toast.success(" Added to wishlist!");
+        const token = await getUserToken();
+        if (isInWishlist) {
+          const res = await fetch(
+            `https://ecommerce.routemisr.com/api/v1/wishlist/${productId}`,
+            {
+              method: "DELETE",
+              headers: {
+                token: token + "",
+              },
+            }
+          );
+          const data = await res.json();
+          if (data.success !== "success") {
+            setIsInWishlist(false);
+            toast.success("Removed from wishlist");
+          } else {
+            toast.error("Failed to remove from wishlist");
+          }
         } else {
-          toast.error(result?.message || " Failed to add to wishlist.");
+          const result = await addToWishlist(productId);
+
+          if (result?.status === "success") {
+            toast.success(" Added to wishlist!");
+            setIsInWishlist(true);
+          } else {
+            toast.error(result?.message || " Failed to add to wishlist.");
+          }
         }
       } catch (error) {
         toast.error(" Something went wrong while adding to wishlist.");
@@ -83,8 +111,10 @@ export default function AddToCart({ productId }: { productId: string }) {
         >
           {isWishLoading ? (
             <Loader2 className="h-5 w-5 animate-spin text-red-500" />
+          ) : isInWishlist ? (
+            <HeartSolid className="h-6 w-6 text-red-500" />
           ) : (
-            <HeartIcon className="h-6 w-6 cursor-pointer text-red-500" />
+            <HeartOutline className="h-6 w-6 text-gray-500 hover:text-red-500 transition-colors" />
           )}
         </button>
       </CardFooter>

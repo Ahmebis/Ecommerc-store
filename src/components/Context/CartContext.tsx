@@ -2,6 +2,7 @@
 import { CartResponse } from "@/Interface";
 import { useSession } from "next-auth/react";
 import React, { createContext, useState, ReactNode, useEffect } from "react";
+import { date } from "zod";
 
 export const CartContext = createContext<{
   cartData: CartResponse | null;
@@ -36,13 +37,10 @@ export default function CartContextProvider({
       setCartData(data);
       if (cartData?.data.cartOwner) {
         localStorage.setItem("userId", cartData.data.cartOwner);
-        console.log("Saved User ID:", data.data.cartOwner);
       }
     }
 
     setIsLoading(false);
-
-    // console.log(data);
   }
 
   useEffect(() => {

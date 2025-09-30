@@ -23,7 +23,8 @@ export default async function Products() {
 
   const { data: products }: { data: ProductI[] } = await response.json();
 
-  // console.log(products[0]);
+  console.log(products[0]);
+  // console.log("NEw THings")
 
   return (
     <>

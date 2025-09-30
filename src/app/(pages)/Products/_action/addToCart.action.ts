@@ -1,11 +1,11 @@
 "use server";
 import { getUserToken } from "@/Helpers/getUserToken/getUserToken";
 
-export async function AddToCartAction(productId: String) {
+export async function AddToCartAction(productId: string) {
   try {
     const token = await getUserToken();
 
-    // console.log("token is " + token);
+    console.log("token is " + token);
 
     const response = await fetch(
       "https://ecommerce.routemisr.com/api/v1/cart",
@@ -14,7 +14,7 @@ export async function AddToCartAction(productId: String) {
         body: JSON.stringify({ productId }),
         headers: {
           token: token + "",
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         },
       }
     );

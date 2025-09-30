@@ -115,12 +115,12 @@ export default function AddFavProduct() {
               onClick={() => removeWishlistItem(product.id)}
               aria-label="remove"
               disabled={removingId === product.id}
-              className="text-red-600 hover:underline text-sm flex items-center justify-center gap-1 mt-2"
+              className="text-red-600 hover:underline text-sm flex items-center justify-center gap-1 mt-2 ms-auto"
             >
               {removingId === product.id && (
                 <Loader2 className="animate-spin size-5" />
               )}
-              Remove
+              <span className=""> Remove</span>
             </button>
           </div>
         ))}

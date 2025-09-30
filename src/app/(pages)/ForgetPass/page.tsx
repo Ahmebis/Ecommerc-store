@@ -35,7 +35,7 @@ export default function ForgetPass() {
       // Optionally redirect to verification page here
     } catch (error) {
       console.error(error);
-      alert("❌ Network or server error");
+      alert(" Network or server error");
     }
   };
 

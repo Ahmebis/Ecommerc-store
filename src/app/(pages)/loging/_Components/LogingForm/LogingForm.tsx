@@ -2,7 +2,7 @@
 import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { email, z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSearchParams } from "next/navigation";
+
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.email("invalid").nonempty({
@@ -36,6 +38,8 @@ type FormFields = z.infer<typeof formSchema>;
 
 export function LoginForm() {
   let searchParms = useSearchParams();
+
+  const router = useRouter();
 
   const callbackUrl = searchParms.get("callback-url");
 
@@ -82,9 +86,21 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
+
               <FormControl>
                 <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
+
+              <FormControl>
+                <button
+                  onClick={() => router.push("/ForgetPass")}
+                  type="button"
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
